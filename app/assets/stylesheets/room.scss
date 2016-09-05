@@ -1,0 +1,43 @@
+.room{
+  width: 800px;
+  margin-left: auto; 
+  margin-right: auto;
+  font-family:tahoma; 
+  font-size:12px;
+  h1{
+    text-align: center;
+  }
+  .content { 
+    padding:5px; 
+    background:#ddd; 
+    border-radius:5px;
+    border:1px solid #CCC; 
+    margin-top:10px; 
+    resize:none;
+    width: 800px;
+    height: 500px;
+    background-color: white;
+    overflow: auto;
+  }
+  .into { 
+    border-radius:5px; 
+    border:1px solid #ccc;
+    margin-top:5px; 
+    padding:10px; 
+    width:600px;
+    height: 100px;  
+    resize: none;
+  }
+  .status { 
+    display:block; 
+    float:left; 
+    margin-top: 50px; 
+  }
+  .send-msg{
+    border-radius: 5px;
+    width: 100px;
+    height: 30px;
+    float: right;
+    margin-top: 90px;
+  }
+}
