@@ -15,5 +15,6 @@
 //= require turbolinks
 
 //= require room
+//= require socket.io
 
 //= require_tree .

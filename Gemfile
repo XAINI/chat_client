@@ -47,4 +47,5 @@ end
 
 gem 'haml'
 gem 'mongoid',  '4.0.2'
+gem 'redis', '~>3.2'
 
