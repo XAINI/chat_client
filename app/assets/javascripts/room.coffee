@@ -1,32 +1,42 @@
-class Room
+# 用户注册
+class Register
   constructor: (@$eml)->
     @bind_event()
 
-  go_to_staff_page: (data)->
-    console.log data
-    window.location.href = "/rooms/staff?staff_list=#{data}"
-    # jQuery.ajax
-    #   url: '/rooms/staff',
-    #   method: 'get',
-    #   data: {staff_list: data}
-    # .success (msg)->
-    #   console.log msg
-    # .error (msg)->
-    #   console.log msg
+  create_participant: (data)->
 
+  bind_event: ->
+    # jQuery('.nickename').keydown((e)=>
+    #   if e.keyCode == 13
+    #     name = jQuery(this).val()
+    #     @create_participant(name)
+    # )
+
+    @$eml.on 'click', '.register-submit-part .submit-name', =>
+      name = jQuery('.nickename').val()
+      @create_participant(name)
+
+# 聊天室
+class Room
+  constructor: (@$eml)->
+    @bind_event()
 
   bind_event: ->
     myName = false
     nickname = []
     socket.on 'open', ->
-      jQuery('.status').text('输入昵称:')
+      myDate = new Date()
+      name = jQuery('.status').text()
+      p = "<p>system  @ #{myDate.toLocaleString()}: Welcome #{name}</p>\n"
+      jQuery('.content').append(p)
+
 
     socket.on 'system', (json)->
       p = ''
-      if json.type == 'welcome'
-        if myName == json.text
-          jQuery('.status').text(myName + ': ').css('color', json.color)
-        p = "<p style='background: #{json.color}'>system  @ #{json.time}: Welcome #{json.text}</p>\n"
+      # if json.type == 'welcome'
+      #   if myName == json.text
+      #     jQuery('.status').text(myName + ': ').css('color', json.color)
+      #   p = "<p style='background: #{json.color}'>system  @ #{json.time}: Welcome #{json.text}</p>\n"
 
       if json.type == 'disconnect'
         if json.text == false 
@@ -46,31 +56,25 @@ class Room
     jQuery('.into').keydown((e)->
       if e.keyCode == 13
         msg = jQuery(this).val()
+        name = jQuery('.status').text()
         if !msg
           return
-        socket.send(msg)
+        socket.send(msg, name)
         $(this).val('')
         if myName == false 
-          myName = msg
+          myName = name
     )
 
-    @$eml.on 'click', '.room-staff .staff', =>
-      @go_to_staff_page(nickname)
+    @$eml.on 'click', '.room-staff .staff', ->
+      window.location.href = "/rooms/staff?staff_list=#{nickname}"
 
 
-    # @$eml.on 'click', '.type-area .send-msg', ->
-    #   get_time = new Date()
-    #   input_val = jQuery('.into').val() 
-    #   if input_val == ""
-    #     alert("发送内容能为空，请输入发送内容！")
-    #     return
-    #   tag_p = "<p><span style='color: #FFBB5A;'>Iverson</span>&nbsp;&nbsp;&nbsp;&nbsp;#{get_time.toLocaleString()}<br/>&nbsp;&nbsp;&nbsp;&nbsp;#{input_val}</p>"
-    #   jQuery('.content').append(tag_p)
-    #   jQuery('.into').val('')
-    #   jQuery('.content')[0].scrollTop = jQuery('.content')[0].scrollHeight
-
-
-
+# 聊天室
 jQuery(document).on 'ready page:load', ->
   if jQuery('.room').length > 0
     new Room jQuery('.room')
+
+# 用户注册
+jQuery(document).on 'ready page:load',->
+  if jQuery('.register').length > 0
+    new Register jQuery('.register')

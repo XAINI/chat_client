@@ -1,0 +1,12 @@
+.room
+  .room-title
+    %h1 欢迎来到聊天室
+  .room-staff
+    %a.staff{href: 'javascript:;'}
+      %img{src: '../people.ico'}
+  .content
+  .type-area
+    %span.status 
+      =current_user.name
+    %input.into{placeholder: "说点什么......"}
+    / %button.send-msg 发 送

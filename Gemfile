@@ -49,3 +49,8 @@ gem 'haml'
 gem 'mongoid',  '4.0.2'
 gem 'redis', '~>3.2'
 
+gem 'bootstrap-sass', '~> 3.3.5'
+gem 'simple_form'               
+gem 'play_auth', :github => 'mindpin/play_auth',
+                 :tag => "0.0.1"
+
