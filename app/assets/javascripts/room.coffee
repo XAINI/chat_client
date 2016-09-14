@@ -37,11 +37,6 @@ class Room
 
     socket.on 'system', (json)->
       p = ''
-      # if json.type == 'welcome'
-      #   if myName == json.text
-      #     jQuery('.status').text(myName + ': ').css('color', json.color)
-      #   p = "<p style='background: #{json.color}'>system  @ #{json.time}: Welcome #{json.text}</p>\n"
-
       if json.type == 'disconnect'
         if json.text == false 
           return
@@ -86,8 +81,10 @@ class PrivateRoom
       socket.emit('new user', from)
       socket.emit('private message', from, to, msg)
       socket.on("to#{from}", (data)->
-        message_list.append("<p>#{data.from}说#{data.message}</p><br/>")
+        message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</span></p><br/>")
+        message_list[0].scrollTop = message_list[0].scrollHeight
       )
+      jQuery('.private-input .message').val('')
     )
 
 

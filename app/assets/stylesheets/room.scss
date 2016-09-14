@@ -18,6 +18,17 @@
   text-align: center;
 }
 
+@mixin display_msg(){
+  padding:5px; 
+  background:#ddd; 
+  border-radius:5px;
+  border:1px solid #CCC; 
+  margin-top:10px; 
+  resize:none;
+  background-color: white;
+  overflow: auto;
+}
+
 // 群聊 (chat_room.html.halml)
 .room{
   @include page_style;
@@ -36,16 +47,9 @@
     }
   }
   .content { 
-    padding:5px; 
-    background:#ddd; 
-    border-radius:5px;
-    border:1px solid #CCC; 
-    margin-top:10px; 
-    resize:none;
+    @include display_msg;
     width: 100%;
     height: 80%;
-    background-color: white;
-    overflow: auto;
   }
   .type-area{
     width: 100%;
@@ -132,6 +136,14 @@
       width: 200px;
       height: 50px;
       margin-top: 40px;
+    }
+  }
+  .private-content{
+    @include display_msg;
+    width: 100%;
+    height: 50%;
+    span{
+      border-radius:5px;
     }
   }
 }
