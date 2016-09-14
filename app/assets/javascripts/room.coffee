@@ -4,16 +4,19 @@ class Register
     @bind_event()
 
   create_participant: (data)->
+    jQuery.ajax
+      url: ' /auth/users/developers',
+      method: "post",
+      data: {name: data}
+    .success (msg)->
+      console.log msg
+    .error (msg)->
+      console.log msg
+
 
   bind_event: ->
-    # jQuery('.nickename').keydown((e)=>
-    #   if e.keyCode == 13
-    #     name = jQuery(this).val()
-    #     @create_participant(name)
-    # )
-
     @$eml.on 'click', '.register-submit-part .submit-name', =>
-      name = jQuery('.nickename').val()
+      name = jQuery('.nickname').val()
       @create_participant(name)
 
 # 聊天室
@@ -23,10 +26,11 @@ class Room
 
   bind_event: ->
     myName = false
-    nickname = []
+    nickname_ary = []
     socket.on 'open', ->
       myDate = new Date()
       name = jQuery('.status').text()
+      socket.emit("open", name)
       p = "<p>system  @ #{myDate.toLocaleString()}: Welcome #{name}</p>\n"
       jQuery('.content').append(p)
 
@@ -51,7 +55,7 @@ class Room
       jQuery('.content')[0].scrollTop = jQuery('.content')[0].scrollHeight
 
     socket.on 'search', (data)->
-      nickname = data
+      nickname_ary = data
 
     jQuery('.into').keydown((e)->
       if e.keyCode == 13
@@ -66,15 +70,38 @@ class Room
     )
 
     @$eml.on 'click', '.room-staff .staff', ->
-      window.location.href = "/rooms/staff?staff_list=#{nickname}"
+      window.location.href = "/rooms/staff?staff_list=#{nickname_ary}"
 
 
-# 聊天室
+class PrivateRoom
+  constructor: (@$eml)->
+    @bind_event()
+
+  bind_event: ->
+    jQuery('.private-send .send-message').click((e)->
+      from = jQuery('.private-input .from-name').val()
+      msg = jQuery('.private-input .message').val()
+      to = jQuery('.private-input .to-name').val()
+      message_list = jQuery('.private-content')
+      socket.emit('new user', from)
+      socket.emit('private message', from, to, msg)
+      socket.on("to#{from}", (data)->
+        message_list.append("<p>#{data.from}说#{data.message}</p><br/>")
+      )
+    )
+
+
+# 群聊天室
 jQuery(document).on 'ready page:load', ->
   if jQuery('.room').length > 0
     new Room jQuery('.room')
 
 # 用户注册
-jQuery(document).on 'ready page:load',->
+jQuery(document).on 'ready page:load', ->
   if jQuery('.register').length > 0
     new Register jQuery('.register')
+
+# 单聊
+jQuery(document).on 'ready page:load', ->
+  if jQuery('.private-room').length > 0
+    new PrivateRoom jQuery('.private-room')

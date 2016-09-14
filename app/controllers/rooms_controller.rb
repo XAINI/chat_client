@@ -15,8 +15,13 @@ class RoomsController < ApplicationController
     @user_list
   end
 
-  # 聊天室
+  # 群聊
   def chat_room
+    
+  end
+
+  # 单聊
+  def private_room
     
   end
 end

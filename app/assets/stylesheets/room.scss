@@ -6,6 +6,19 @@
   font-family:tahoma; 
   font-size:12px;
 }
+@mixin input_style(){
+  width: 100%;
+  height: 50px;
+  border-left: 0px;
+  border-right: 0px;
+  border-top: 0px;
+  border-bottom: 1px solid #000;
+  outline: none;
+  font-size: 30px;
+  text-align: center;
+}
+
+// 群聊 (chat_room.html.halml)
 .room{
   @include page_style;
   .room-title{
@@ -60,28 +73,65 @@
   }
 }
 
+// 注册 (index.html.halm)
 .register{
   @include page_style;
-  .nickename{
-    width: 90%;
-    height: 50px;
-    border-left: 0px;
-    border-right: 0px;
-    border-top: 0px;
-    border-bottom: 1px solid #000;
-    outline: none;
-    font-size: 30px;
-    text-align: center;
-  }
-  .submit-name{
-    width: 9%;
-    float: right;
-    margin-top: 30px;
-  }
   .register-title{
     width: 100%;
      h1{
       text-align: center;
+    }
+  }
+  .register-submit-part{
+    .nickname{
+      @include input_style;
+    }
+    .user-eamil{
+      @include input_style;
+    }
+    .user-pwd{
+      @include input_style;
+    }
+    .confirm-pwd{
+      @include input_style;
+    }
+  }
+  .register-footer{
+    text-align:center;
+    .submit-name{
+      width: 200px;
+      height: 50px;
+      margin-top: 40px;
+    }  
+  }
+}
+
+// 私聊 (private_room.html.haml)
+.private-room{
+  @include page_style;
+  .private-title{
+    width: 100%;
+     h1{
+      text-align: center;
+    }
+  }
+  .private-input{
+    .from-name{
+      @include input_style;
+    }
+    .to-name{
+      @include input_style;
+    }
+    .message{
+      @include input_style;
+    }
+  }
+  .private-send{
+    text-align:center;
+    .send-message{
+      width: 200px;
+      height: 50px;
+      margin-top: 40px;
     }
   }
 }
