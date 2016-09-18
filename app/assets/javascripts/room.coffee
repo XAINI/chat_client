@@ -73,18 +73,44 @@ class PrivateRoom
     @bind_event()
 
   bind_event: ->
+    name = jQuery('.private-input .from-name').val()
+    socket.emit('userAry', name)
+
+    jQuery('.private-input .to-name').click (e)->
+      re = /["]*/
+      user = jQuery(this).attr("data-users")
+      temp = user.replace('\[','')
+      temp_ary = temp.replace('\]','')
+      temp_list = temp_ary.replace(re,'')
+      user_ary = temp_list.split(',')
+      console.log user_ary
+      if jQuery(this).text() != ''
+
+      else
+        jQuery(this).prepend("<option value='0'>请选择</option>")
+        jQuery(this).append("<option value=''>Text</option>")
+      # socket.on 'privtNmAry', (data)->
+        # for name in data
+        #   console.log name
+
+        # jQuery(this).prepend("<option value='0'>请选择</option>")
+        # jQuery(this).append("<option value=''>Text</option>")
+
     jQuery('.private-send .send-message').click((e)->
       from = jQuery('.private-input .from-name').val()
       msg = jQuery('.private-input .message').val()
       to = jQuery('.private-input .to-name').val()
       message_list = jQuery('.private-content')
-      socket.emit('new user', from)
-      socket.emit('private message', from, to, msg)
-      socket.on("to#{from}", (data)->
-        message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</span></p><br/>")
-        message_list[0].scrollTop = message_list[0].scrollHeight
-      )
-      jQuery('.private-input .message').val('')
+      if from == '' || msg == '' || to == ''
+
+      else 
+        socket.emit('new user', from)
+        socket.emit('private message', from, to, msg)
+        socket.on "to#{from}", (data)->
+          message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
+          message_list[0].scrollTop = message_list[0].scrollHeight
+
+        jQuery('.private-input .message').val('')
     )
 
 

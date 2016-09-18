@@ -2,8 +2,8 @@
   .private-title
     %h1 私聊室
   .private-input
-    %input.from-name{placeholder: "请输入您的姓名..."}
-    %input.to-name{placeholder: "发送给谁..."}
+    %input.from-name{placeholder: "请输入您的姓名...", value: "#{current_user.name}"}
+    %select.to-name{data: {users: @user_name_ary}}
     %input.message{placeholder: "请输入您想要发送的信息..."}
   .private-send
     %button.send-message 发送

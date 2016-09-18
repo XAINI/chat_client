@@ -22,6 +22,11 @@ class RoomsController < ApplicationController
 
   # 单聊
   def private_room
-    
+    @user_name_ary = []
+    @all_user = User.all.to_a
+    @all_user.each do |u|
+      @user_name_ary.push(u.name)
+    end
+    @user_name_ary
   end
 end
