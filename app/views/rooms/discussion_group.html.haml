@@ -1,0 +1,16 @@
+.group
+  .back
+    %a{href: "/rooms"}←首页
+  .add-group
+    %a.jump-to-add-group-page{href: "/rooms/add_group"}创建讨论组+
+  .group-list
+    %label 我加入的讨论组：
+    .group-names
+      %table
+        -@group.each do |g|
+          %tr
+            %td
+              %a.name{href: "javascript:;"}
+                =g.name
+            %td
+              =g.member

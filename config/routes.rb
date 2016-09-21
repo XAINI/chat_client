@@ -5,6 +5,10 @@ Rails.application.routes.draw do
     get :staff, on: :collection
     get :chat_room, on: :collection
     get :private_room, on: :collection
+    get :register, on: :collection
+    get :discussion_group, on: :collection
+    get :add_group, on: :collection
+    post :create_discussion_group, on: :collection
   end
 
   mount PlayAuth::Engine => '/auth', :as => :auth

@@ -29,6 +29,31 @@
   overflow: auto;
 }
 
+.home{
+  @include page_style;
+  font-family: 微软雅黑;
+  font-size: 26px;
+  text-align: center;
+  .prompt{
+    color: red;
+    font-size: 18px;
+    float: left;
+    margin-top: 20px;
+  }
+}
+
+.group{
+  @include page_style;
+  .add-group{
+    margin-top: 20px;
+  }
+  .group-list{
+    @include display_msg;
+    width: 100%;
+    height: 80%;
+  }
+}
+
 // 群聊 (chat_room.html.halml)
 .room{
   @include page_style;

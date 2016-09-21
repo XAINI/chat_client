@@ -1,10 +1,18 @@
 .private-room
+  .back
+    %a{href: "/rooms"}←首页
   .private-title
     %h1 私聊室
   .private-input
     %input.from-name{placeholder: "请输入您的姓名...", value: "#{current_user.name}"}
-    %select.to-name{data: {users: @user_name_ary}}
+    %select.to-name
+      %option{value: "0"} --请选择--
+      -@user_name_ary.each do |u|
+        -if u != current_user.name
+          %option{value: "#{u}"} 
+            =u
     %input.message{placeholder: "请输入您想要发送的信息..."}
   .private-send
     %button.send-message 发送
   .private-content
+    %ul
