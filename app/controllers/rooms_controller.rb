@@ -36,6 +36,13 @@ class RoomsController < ApplicationController
     end
   end
 
+  # 讨论组房间
+  def discussion_group_room
+    group_id = params[:group_id]
+    @group = Group.where(id: group_id).to_a
+    @group
+  end
+
   # 群组成员
   def staff
     @staff_list = params[:staff_list]

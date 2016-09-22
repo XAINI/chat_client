@@ -10,7 +10,8 @@
         -@group.each do |g|
           %tr
             %td
-              %a.name{href: "javascript:;"}
+              %a.name{href: "javascript:;", data:{group_id: "#{g.id}"}}
                 =g.name
             %td
               =g.member
+              
