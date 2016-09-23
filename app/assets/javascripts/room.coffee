@@ -99,19 +99,26 @@ class DiscussionGroupList
 
   bind_event: ->
     @$eml.on 'click', ".group-list .group-names .name", ->
+      members = jQuery(this).closest('.name').attr('data-members')
+      current_user = jQuery(this).closest('.name').attr('data-current-user')
       group_id = jQuery(this).closest('.name').attr('data-group-id')
-      window.location.href = "/rooms/discussion_group_room?group_id=#{group_id}"
+      temp = JSON.parse(members)
+      boolean = jQuery.inArray(current_user, temp)
+      if boolean == -1
+        alert("您还不在讨论组中请与创建者联系申请加入本讨论组")
+      else
+        window.location.href = "/rooms/discussion_group_room?group_id=#{group_id}"
 
-# 讨论组
-class DiscussionGroup
+# 创建讨论组
+class AdddDiscussionGroup
   constructor: (@$eml)->
     @bind_event()
 
-  create_group: (group_name, members)->
+  create_group: (group_name, members, current_user)->
     jQuery.ajax
       url: "/rooms/create_discussion_group",
       method: "post",
-      data:{name: group_name, member: members}
+      data:{name: group_name, member: members, creator: current_user}
     .success (msg)->
       alert("success")
       console.log msg
@@ -122,16 +129,29 @@ class DiscussionGroup
     @$eml.on 'click', '.submit-checked .create-group', =>
       participant = ""
       group_name = jQuery('.group-name').val()
+      current_user = jQuery('.title .current-user').text()
       jQuery("input[name='checkbox']:checked").each ->
         participant += "#{jQuery(this).val()},"
 
-      if group_name != '' && participant.length != ''
-        @create_group(group_name, participant)
+      if group_name != '' && participant.length != '' && current_user != ''
+        @create_group(group_name, participant, current_user)
 
 # 讨论组房间
 class DiscussionGroupRoom
   constructor: (@$eml)->
     @bind_event()
+
+
+  out_discussion_group: (data, id)->
+    jQuery.ajax
+      url: "/rooms/update_group_member",
+      method: "post",
+      data: {member: data}
+    .success (msg)->
+      socket.emit('leave')
+      console.log msg
+    .error (msg)->
+      console.log msg
 
 
   bind_event: ->
@@ -150,6 +170,7 @@ class DiscussionGroupRoom
     socket.on 'sys', (sys_msg, users)->
       message = "<p>#{sys_msg}</p>"
       jQuery('.discussion-content').append(message)
+      jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
 
     # 发送消息
     jQuery('.send-discussion-msg .send').click ->
@@ -158,8 +179,10 @@ class DiscussionGroupRoom
       socket.send(msg)
 
     # 退出房间
-    jQuery('.discussion-group-name .out-group').click ->
-      socket.emit('leave')
+    jQuery('.discussion-group-name .out-group').click =>
+      group_id = jQuery('.discussion-group-name').closest('.group-room-detail').attr('data-group-id')
+      console.log group_id
+      # @out_discussion_group(user_name, group_id)
 
 
 
@@ -183,7 +206,7 @@ jQuery(document).on 'ready page:load', ->
 # 讨论组
 jQuery(document).on 'ready page:load', ->
   if jQuery('.add-group').length > 0
-    new DiscussionGroup jQuery('.add-group')
+    new AdddDiscussionGroup jQuery('.add-group')
 
 # 讨论组列表
 jQuery(document).on "ready page:load", ->

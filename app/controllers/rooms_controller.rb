@@ -27,13 +27,24 @@ class RoomsController < ApplicationController
   def create_discussion_group
     group_name = params[:name]
     member = params[:member]
+    creator = params[:creator]
     member_ary = member.split(',')
-    @group = Group.create(:name => group_name, :member => member_ary)
+    @group = Group.create(:name => group_name, :creator => creator, :member => member_ary)
     if @group.save
       redirect_to "/rooms/discussion_group"
     else
       render json: "创建失败"
     end
+  end
+
+  # 更新讨论组成员名单
+  def update_group_member
+    member_list = params[:member]
+    temp = member_list.gsub(/[\n\s]*/, '')
+    
+    p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    p temp
+    p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
   end
 
   # 讨论组房间

@@ -2,13 +2,17 @@
   .back
     %a{href: "/rooms/discussion_group"}←讨论组列表
   .discussion-title
-    %h1 欢迎来到讨论组
+    %h1 
+      %span 欢迎
+      %span.current-user
+        =current_user.name
+      %span 来到讨论组
   .discussion-group-name
     .group-name-msg
       %label 
         讨论组名称：
         -@group.each do |g|
-          %span
+          %span.group-room-detail{data:{group_id: "#{g.id}"}}
             =g.name
     .out-group
       %button 退出房间

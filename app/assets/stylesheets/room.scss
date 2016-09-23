@@ -29,6 +29,7 @@
   overflow: auto;
 }
 
+/* 首页 (index.html.haml) */
 .home{
   @include page_style;
   font-family: Microsoft YaHei;
@@ -47,6 +48,7 @@
   }
 }
 
+/* 讨论组列表 ( discussion_group.html.haml) */
 .group{
   @include page_style;
   .add-group{
@@ -59,7 +61,7 @@
   }
 }
 
-// 群聊 (chat_room.html.halml)
+/* 群聊 (chat_room.html.haml) */
 .room{
   @include page_style;
   .room-title{
@@ -107,7 +109,7 @@
   }
 }
 
-// 注册 (index.html.halm)
+/* 注册 (register.html.halm) */
 .register{
   @include page_style;
   .register-title{
@@ -140,7 +142,7 @@
   }
 }
 
-// 私聊 (private_room.html.haml)
+/* 私聊 (private_room.html.haml) */
 .private-room{
   @include page_style;
   .private-title{
@@ -178,12 +180,16 @@
   }
 }
 
+/* 讨论组房间  (discussion_group_room.html.haml)*/
 .discussion-room{
   @include page_style;
   .discussion-title{
     height: 5%;
     h1{
       text-align: center;
+      .current-user {
+        color: #55FF6D;
+      }
     }
   }
   .discussion-group-name{
@@ -224,6 +230,14 @@
       width: 10%;
       float: right;
       margin-top: 2.5%;
+    }
+  }
+}
+/* 创建讨论组界面样式 (add_group.html.haml) */
+.add-group {
+  .title {
+    .current-user {
+      color: #55FF6D;
     }
   }
 }

@@ -3,7 +3,11 @@
     %a{href: "/rooms/discussion_group"}←讨论组列表
   .add-group
   .title
-    %h1 欢迎来到创建讨论组页面
+    %h1 
+      %span 欢迎
+      %span.current-user 
+        =current_user.name
+      %span 来到创建讨论组页面
   .all-user-list
     %input.group-name{placeholder: "请输入讨论组名称..."}
     .group-member

@@ -10,8 +10,12 @@
         -@group.each do |g|
           %tr
             %td
-              %a.name{href: "javascript:;", data:{group_id: "#{g.id}"}}
+              %a.name{href: "javascript:;", data:{members: g.member,group_id: "#{g.id}", current_user: "#{current_user.name}"}}
                 =g.name
             %td
               =g.member
+            %td
+              %span 创建者: 
+              %a{href: "javascript:;"}  
+                =g.creator
               

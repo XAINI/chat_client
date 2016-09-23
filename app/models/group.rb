@@ -3,8 +3,9 @@ class Group
   include Mongoid::Timestamps
 
   field :name, type: String
+  field :creator, type: String
   field :member, type: Array
 
-  validates :name, :member, presence: true;
+  validates :name, :creator, :member, presence: true;
 
 end
