@@ -1,0 +1,30 @@
+.edit-group
+  .back
+    %a{href: "/rooms/discussion_group"}←讨论组列表
+  .title
+    %h1 
+      %span 欢迎
+      %span.current-user 
+        =current_user.name
+      %span 来到修改讨论组页面
+  .all-user-list
+    .group-name
+      %label
+        讨论组名称: 
+      %input.input-name{placeholder: "请输入讨论组名称...", value: "#{@group.name}"}
+    .group-member
+      %label 
+        讨论组成员: 
+      -@all_user.each do |u|
+        -if @group.member.include?(u.name)
+          %input{type: "Checkbox", name: "checkbox", value: "#{u.name}", checked: "checked"} 
+            =u.name
+        -else
+          %input{type: "Checkbox", name: "checkbox", value: "#{u.name}"} 
+            =u.name
+
+  .submit-checked
+    .hidden-tag
+      %span.span-val{style:"visibility:hidden"}
+        =@group.id
+    %button.create-group 修改讨论组

@@ -14,6 +14,8 @@
         -@group.each do |g|
           %span.group-room-detail{data:{group_id: "#{g.id}"}}
             =g.name
+          %span.group-id{style:"visibility:hidden"}
+            =g.id
     .out-group
       %button 退出房间
   .discussion-content

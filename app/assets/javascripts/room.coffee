@@ -98,6 +98,7 @@ class DiscussionGroupList
     @bind_event()
 
   bind_event: ->
+    # 点击讨论组名称，进入讨论组
     @$eml.on 'click', ".group-list .group-names .name", ->
       members = jQuery(this).closest('.name').attr('data-members')
       current_user = jQuery(this).closest('.name').attr('data-current-user')
@@ -108,6 +109,17 @@ class DiscussionGroupList
         alert("您还不在讨论组中请与创建者联系申请加入本讨论组")
       else
         window.location.href = "/rooms/discussion_group_room?group_id=#{group_id}"
+
+    # 点击修改进入修改界面
+    @$eml.on 'click', '.group-list .group-names .edit--discussion-group', ->
+      creator = jQuery(this).closest('.edit--discussion-group').attr('data-creator')
+      current_user = jQuery(this).closest('.edit--discussion-group').attr('data-current-user')
+      group_id = jQuery(this).closest('.edit--discussion-group').attr('data-group-id')
+      if creator == current_user
+        window.location.href = "/rooms/#{group_id}/edit_group"
+      else
+        alert("您不是创建者不能对讨论组信息进行修改")
+        
 
 # 创建讨论组
 class AdddDiscussionGroup
@@ -136,17 +148,54 @@ class AdddDiscussionGroup
       if group_name != '' && participant.length != '' && current_user != ''
         @create_group(group_name, participant, current_user)
 
+
+# 修改讨论组信息
+class DiscussionGroupEdit
+  constructor: (@$eml)->
+    @bind_event()
+
+  update_group_detail: (name, member, creator, id, flag)->
+    jQuery.ajax
+      url: "/rooms/update_group_member",
+      method: "post",
+      data: {group_name: name, group_id: id, member: member, flag: flag, creator: creator}
+    .success (msg)->
+      console.log msg
+    .error (msg)->
+      console.log msg
+
+  bind_event: ->
+    @$eml.on 'click', '.submit-checked .create-group', =>
+      group_name = jQuery('.all-user-list .group-name .input-name').val()
+      current_user = jQuery('.title .current-user').text()
+      group_id = jQuery('.submit-checked .hidden-tag .span-val').text()
+      user_name = current_user.replace(/[\n\s]/g, '')
+      member = []
+      flag = "fix"
+      jQuery("input[name='checkbox']:checked").each ->
+        member.push(jQuery(this).val())
+
+      if member.indexOf(user_name) > -1
+        @update_group_detail(group_name, member, user_name, group_id, flag)
+      else if confirm("您确定要将创建者移除吗？")
+        user_name = member[0]
+        @update_group_detail(group_name, member, user_name, group_id, flag)
+      else
+        console.log "取消"
+
+
+
 # 讨论组房间
 class DiscussionGroupRoom
   constructor: (@$eml)->
     @bind_event()
 
 
-  out_discussion_group: (data, id)->
+  out_discussion_group: (data, id, flag)->
     jQuery.ajax
       url: "/rooms/update_group_member",
       method: "post",
-      data: {member: data}
+      data: {member: data, group_id: id, flag: flag}
     .success (msg)->
       socket.emit('leave')
       console.log msg
@@ -180,9 +229,9 @@ class DiscussionGroupRoom
 
     # 退出房间
     jQuery('.discussion-group-name .out-group').click =>
-      group_id = jQuery('.discussion-group-name').closest('.group-room-detail').attr('data-group-id')
-      console.log group_id
-      # @out_discussion_group(user_name, group_id)
+      group_id = jQuery(".discussion-group-name .group-name-msg .group-id").text()
+      flag = "out"
+      @out_discussion_group(user_name, group_id, flag)
 
 
 
@@ -217,5 +266,9 @@ jQuery(document).on "ready page:load", ->
 jQuery(document).on "ready page:load", ->
   if jQuery('.discussion-room').length > 0
     new DiscussionGroupRoom jQuery('.discussion-room')
-  
+
+# 修改讨论组信息
+jQuery(document).on 'ready page:load', ->
+  if jQuery('.edit-group').length > 0
+    new DiscussionGroupEdit jQuery('.edit-group')
 

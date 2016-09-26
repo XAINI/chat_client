@@ -4,7 +4,7 @@
   .add-group
     %a.jump-to-add-group-page{href: "/rooms/add_group"}创建讨论组+
   .group-list
-    %label 我加入的讨论组：
+    %label 讨论组：
     .group-names
       %table
         -@group.each do |g|
@@ -18,4 +18,8 @@
               %span 创建者: 
               %a{href: "javascript:;"}  
                 =g.creator
+            %td
+              %span 操作: 
+              %a.edit--discussion-group{href: "javascript:;", data:{creator: g.creator, current_user: "#{current_user.name}", group_id: "#{g.id}"}}
+                修改
               

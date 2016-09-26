@@ -28,8 +28,9 @@ class RoomsController < ApplicationController
     group_name = params[:name]
     member = params[:member]
     creator = params[:creator]
+    new_creator = creator.gsub(/[\n\s]*/, '')
     member_ary = member.split(',')
-    @group = Group.create(:name => group_name, :creator => creator, :member => member_ary)
+    @group = Group.create(:name => group_name, :creator => new_creator, :member => member_ary)
     if @group.save
       redirect_to "/rooms/discussion_group"
     else
@@ -37,21 +38,69 @@ class RoomsController < ApplicationController
     end
   end
 
+  # 修改讨论组信息
+  def edit_group
+    group_id = params[:id]
+    @all_user = User.all
+    @group = Group.find(group_id)
+  end
+
   # 更新讨论组成员名单
   def update_group_member
     member_list = params[:member]
-    temp = member_list.gsub(/[\n\s]*/, '')
-    
-    p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    p temp
-    p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    group_id = params[:group_id]
+    flag = params[:flag]
+    group_name = params[:group_name]
+    creator = params[:creator]
+    id = group_id.gsub(/[\n\s]*/, '')
+
+    @group = Group.find(id)
+
+    user_name = @group.creator
+
+    # 用户退出房间 
+    if flag == "out"
+      member = []
+      temp = member_list.gsub(/[\n\s]*/, '')
+      member = @group.member
+      # 将用户从房间用户列表中移除
+      member.each do |m|
+        if m == temp
+          member.delete(m)
+        end
+      end
+      
+      # 将创建者替换成用户列表中第一个用户(如果退出用户为创建者)
+      if user_name == temp
+        user_name = member[0]
+      end
+
+      # 更新房间信息
+      if @group.update_attributes(member: member, creator: user_name)
+        redirect_to "/rooms/discussion_group"
+      else
+        render json: "更新失败"
+      end
+    end
+
+    # 讨论组信息修改(创建者操作)
+    if flag == "fix"
+      temp_user = ""
+      creator == user_name ? temp_user = user_name : temp_user = creator
+
+      if @group.update_attributes(member: member_list, name: group_name, creator: temp_user)
+        redirect_to "/rooms/discussion_group"
+      else
+        render render json: "更新失败"
+      end
+    end
+
   end
 
   # 讨论组房间
   def discussion_group_room
     group_id = params[:group_id]
     @group = Group.where(id: group_id).to_a
-    @group
   end
 
   # 群组成员
