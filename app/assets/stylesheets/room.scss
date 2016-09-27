@@ -54,6 +54,14 @@
   .add-group{
     margin-top: 20px;
   }
+  .title{
+    text-align: center;
+    h1{
+      span{
+        color: #55FF6D;
+      }
+    }
+  }
   .group-list{
     @include display_msg;
     width: 100%;
@@ -61,6 +69,9 @@
     .group-names{
       span{
         margin-left: 25px;
+      }
+      a{
+        text-decoration: none;
       }
     }
   }
@@ -261,5 +272,15 @@
   }
   .submit-checked{
     margin-top: 20px;
+  }
+}
+
+/* 讨论组详情界面样式 (show_detail.html.haml) */
+.show-group{
+  font-family: Microsoft YaHei;
+  .group-detail{
+    .group-info {
+      color: #1555FF;
+    }
   }
 }

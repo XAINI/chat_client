@@ -84,9 +84,7 @@ class PrivateRoom
         socket.emit('new user', from)
         socket.emit('private message', from, to, msg)
         socket.on "to#{from}", (data)->
-          console.log "Hi your in"
           message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
-          console.log "emit message successed"
           message_list[0].scrollTop = message_list[0].scrollHeight
 
         jQuery('.private-input .message').val('')
@@ -234,6 +232,19 @@ class DiscussionGroupRoom
       @out_discussion_group(user_name, group_id, flag)
 
 
+# 讨论组列表
+class GroupList
+  constructor: (@$eml)->
+    @bind_event()
+
+
+  bind_event: ->
+    @$eml.on 'click', '.group-list .list-head .search-group', =>
+      user_name = jQuery('.input-into').val()
+      # if user_name == ''
+      #   alert('请输入用户名')
+      # else
+      window.location.href = "/rooms/discussion_group?user_name=#{user_name}&flag=search"
 
 
 
@@ -271,4 +282,9 @@ jQuery(document).on "ready page:load", ->
 jQuery(document).on 'ready page:load', ->
   if jQuery('.edit-group').length > 0
     new DiscussionGroupEdit jQuery('.edit-group')
+
+# 讨论组列表
+jQuery(document).on 'ready page:load', ->
+  if jQuery('.group').length > 0
+    new GroupList jQuery('.group')
 

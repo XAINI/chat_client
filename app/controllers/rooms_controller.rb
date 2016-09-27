@@ -3,6 +3,7 @@ class RoomsController < ApplicationController
     
   end
 
+# 注册
   # 将用户保存进数据库中
   def create_participant
     
@@ -13,17 +14,40 @@ class RoomsController < ApplicationController
     
   end
 
-  # 讨论组
+# 讨论组
+
+  # 讨论组列表
   def discussion_group
-    @group = Group.all
+    user_name = params[:user_name]
+    flag = params[:flag]
+    @data_group = Group.all.to_a
+    @group = []
+    if flag == "search"
+      if user_name == ""
+        redirect_to "/rooms/discussion_group"
+      else
+        @data_group.each do |g|
+          if g.member.include?(user_name)
+            @group.push(g)
+          end
+        end
+      end
+    end
+
+    if flag == nil
+      @data_group.each do |d|
+        @group.push(d)
+      end
+    end
+
   end
 
-  # 添加讨论组的界面
+  # 创建讨论组(get)
   def add_group
     @all_user = User.all
   end
 
-  # 创建讨论组
+  # 创建讨论组(post)
   def create_discussion_group
     group_name = params[:name]
     member = params[:member]
@@ -38,14 +62,14 @@ class RoomsController < ApplicationController
     end
   end
 
-  # 修改讨论组信息
+  # 修改讨论组信息(get)
   def edit_group
     group_id = params[:id]
     @all_user = User.all
     @group = Group.find(group_id)
   end
 
-  # 更新讨论组成员名单
+  # 修改讨论组信息(post)
   def update_group_member
     member_list = params[:member]
     group_id = params[:group_id]
@@ -97,12 +121,18 @@ class RoomsController < ApplicationController
 
   end
 
-  # 讨论组房间
+  # 讨论组聊天室
   def discussion_group_room
     group_id = params[:group_id]
     @group = Group.where(id: group_id).to_a
   end
 
+  # 讨论组详细信息
+  def show_detail
+    @group = Group.find(params[:id])
+  end
+
+# 群聊
   # 群组成员
   def staff
     @staff_list = params[:staff_list]
@@ -110,12 +140,12 @@ class RoomsController < ApplicationController
     @user_list
   end
 
-  # 群聊
+  # 群聊房间
   def chat_room
     
   end
 
-  # 单聊
+# 单聊
   def private_room
     @user_name_ary = []
     @all_user = User.all.to_a

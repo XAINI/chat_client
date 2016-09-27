@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get :discussion_group_room, on: :collection
     post :update_group_member, on: :collection
     get :edit_group, on: :member
+    get :show_detail, on: :member
   end
 
   mount PlayAuth::Engine => '/auth', :as => :auth

@@ -1,0 +1,22 @@
+.show-group
+  .back
+    %a{href: "/rooms/discussion_group"}←讨论组列表
+  .title
+    %h1 讨论组信息
+  .group-detail
+    .group-name-info
+      %span
+        %strong 讨论组名称: 
+      %span.group-info 
+        =@group.name
+    .group-creator-info
+      %span
+        %strong 讨论组创建者: 
+      %span.group-info 
+        =@group.creator
+    .group-member-info
+      %span
+        %strong 讨论组成员:
+      -@group.member.each do |m|
+        %span.group-info 
+          =m
