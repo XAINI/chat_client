@@ -81,7 +81,7 @@ class PrivateRoom
       to = jQuery('.private-input .to-name').val()
       message_list = jQuery('.private-content')
       if from != '' && msg != '' && to != '0'
-        socket.emit('new user', from)
+        socket.emit('new user', from, to)
         socket.emit('private message', from, to, msg)
         socket.on "to#{from}", (data)->
           message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
