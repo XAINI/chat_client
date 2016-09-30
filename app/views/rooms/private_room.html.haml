@@ -2,15 +2,23 @@
   .back
     %a{href: "/rooms"}←首页
   .private-title
-    %h1 私聊室
+    %h1 私聊室 
   .private-input
     %input.from-name{placeholder: "请输入您的姓名...", value: "#{current_user.name}"}
     %select.to-name
       %option{value: "0"} --请选择--
       -@user_name_ary.each do |u|
         -if u != current_user.name
-          %option{value: "#{u}"} 
-            =u
+          -if @group != nil
+            -if @group.creator == u
+              %option{value: "#{u}", selected: "selected"} 
+                =u
+            -else
+              %option{value: "#{u}"} 
+                =u
+          -else
+            %option{value: "#{u}"} 
+              =u
     %input.message{placeholder: "请输入您想要发送的信息..."}
   .private-send
     %button.send-message 发送

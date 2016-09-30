@@ -82,7 +82,7 @@ class PrivateRoom
       message_list = jQuery('.private-content')
       if from != '' && msg != '' && to != '0'
         socket.emit('new user', from, to)
-        socket.emit('private message', from, to, msg)
+        socket.emit('private message', from, to, msg) 
         socket.on "to#{from}", (data)->
           message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
           message_list[0].scrollTop = message_list[0].scrollHeight
@@ -137,14 +137,16 @@ class AdddDiscussionGroup
 
   bind_event: ->
     @$eml.on 'click', '.submit-checked .create-group', =>
-      participant = ""
+      participant = []
       group_name = jQuery('.group-name').val()
       current_user = jQuery('.title .current-user').text()
+      user_name = current_user.replace(/[\n\s]/g, '')
+      participant.push(user_name)
       jQuery("input[name='checkbox']:checked").each ->
-        participant += "#{jQuery(this).val()},"
+        participant.push(jQuery(this).val())
 
       if group_name != '' && participant.length != '' && current_user != ''
-        @create_group(group_name, participant, current_user)
+        @create_group(group_name, participant, user_name)
 
 
 # 修改讨论组信息

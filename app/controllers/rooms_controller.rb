@@ -52,9 +52,7 @@ class RoomsController < ApplicationController
     group_name = params[:name]
     member = params[:member]
     creator = params[:creator]
-    new_creator = creator.gsub(/[\n\s]*/, '')
-    member_ary = member.split(',')
-    @group = Group.create(:name => group_name, :creator => new_creator, :member => member_ary)
+    @group = Group.create(:name => group_name, :creator => creator, :member => member)
     if @group.save
       redirect_to "/rooms/discussion_group"
     else
@@ -147,12 +145,15 @@ class RoomsController < ApplicationController
 
 # 单聊
   def private_room
+    id = params[:group_id]
+    if id != nil
+      @group = Group.find(id)
+    end
     @user_name_ary = []
     @all_user = User.all.to_a
     @all_user.each do |u|
       @user_name_ary.push(u.name)
     end
-    @user_name_ary
   end
 
 end
