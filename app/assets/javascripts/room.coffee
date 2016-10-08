@@ -3,11 +3,11 @@ class Register
   constructor: (@$eml)->
     @bind_event()
 
-  create_participant: (data)->
+  create_participant: (name, email, password, password_digest)->
     jQuery.ajax
-      url: ' /auth/users/developers',
+      url: ' /rooms/create_participant',
       method: "post",
-      data: {name: data}
+      data: {name: name, email: email, password: password, password_digest: password_digest}
     .success (msg)->
       console.log msg
     .error (msg)->
@@ -15,9 +15,23 @@ class Register
 
 
   bind_event: ->
-    @$eml.on 'click', '.register-submit-part .submit-name', =>
+    @$eml.on 'click', '.register-footer .submit-name', =>
       name = jQuery('.nickname').val()
-      @create_participant(name)
+      email = jQuery('.user-eamil').val()
+      password = jQuery('.user-pwd').val()
+      password_digest = jQuery('.confirm-pwd').val()
+      re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+      if name != '' && email != '' && password != '' && password_digest != ''
+        if re.test(email)
+          if password != password_digest
+            alert("两次输入的密码不同")
+          else
+            @create_participant(name, email, password, password_digest)
+        else
+          alert("邮箱格式不正确(例: xxx@123.com)")
+      else
+        alert("所填项都不能为空")
+      
 
 # 聊天室
 class Room
@@ -86,8 +100,10 @@ class PrivateRoom
         socket.on "to#{from}", (data)->
           message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
           message_list[0].scrollTop = message_list[0].scrollHeight
+      else
+        alert("发送者、接收者和发送的信息不能为空！")
 
-        jQuery('.private-input .message').val('')
+      jQuery('.private-input .message').val('')
 
 
 # 讨论组列表

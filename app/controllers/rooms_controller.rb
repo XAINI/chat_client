@@ -6,7 +6,16 @@ class RoomsController < ApplicationController
 # 注册
   # 将用户保存进数据库中
   def create_participant
-    
+    name = params[:name]
+    email = params[:email]
+    password = params[:password]
+    password_digest = params[:password_digest]
+    @user = User.new(name: name, email: email, password: password, password_digest: password_digest)
+    if @user.save
+      redirect_to "/auth"
+    else
+      render "/rooms/register"
+    end
   end
 
   # 注册
