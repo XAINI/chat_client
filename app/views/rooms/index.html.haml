@@ -1,6 +1,6 @@
 .home
   .register-page
-    %a{href: "/rooms/register", disabled: true} 我要注册
+    %a{href: "auth/users/new", disabled: true} 我要注册
   / .chat-room-page
   /   %a{href: "/rooms/chat_room"} 群聊室
   .private-room-page
@@ -9,7 +9,7 @@
     %a{href: "/rooms/discussion_group"}讨论组
   .prompt
     -if current_user == nil
-      %label.prompt-login 请先登录
+      %a.prompt-login{href:"/auth/users/developers"} 请先登录
     -else
       %label.welcome
         %span 欢迎

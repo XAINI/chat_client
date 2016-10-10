@@ -89,17 +89,19 @@ class PrivateRoom
     @bind_event()
 
   bind_event: ->
+    from = jQuery('.private-input .from-name').val()
+    message_list = jQuery('.private-content')
+    socket.emit('new user', from)
+    
+    socket.on 'private', (data)->
+      message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
+      message_list[0].scrollTop = message_list[0].scrollHeight
+
     jQuery('.private-send .send-message').click ->
-      from = jQuery('.private-input .from-name').val()
       msg = jQuery('.private-input .message').val()
       to = jQuery('.private-input .to-name').val()
-      message_list = jQuery('.private-content')
       if from != '' && msg != '' && to != '0'
-        socket.emit('new user', from, to)
         socket.emit('private message', from, to, msg) 
-        socket.on "to#{from}", (data)->
-          message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
-          message_list[0].scrollTop = message_list[0].scrollHeight
       else
         alert("发送者、接收者和发送的信息不能为空！")
 
