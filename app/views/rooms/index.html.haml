@@ -14,3 +14,9 @@
       %label.welcome
         %span 欢迎
         =current_user.name
+
+    .login
+      .button-option
+        %button.sign-in{data:{user:"#{current_user.name}"}} 登录 socket
+        %button.logout{data:{user:"#{current_user.name}"}} 登出 socket
+      .prompt-info

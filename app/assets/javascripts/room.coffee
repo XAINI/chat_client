@@ -88,15 +88,31 @@ class PrivateRoom
   constructor: (@$eml)->
     @bind_event()
 
+  save_offline_info:(sender, message, receiver)->
+    jQuery.ajax
+      url: "/rooms/save_offline_info",
+      method: "post",
+      data:{sender: sender, msg: message, receiver: receiver}
+    .success (msg)->
+      console.log msg.responseText
+    .error (msg)->
+      console.log msg
+
   bind_event: ->
     from = jQuery('.private-input .from-name').val()
     message_list = jQuery('.private-content')
     socket.emit('new user', from)
-    
+
+    # 显示消息
     socket.on 'private', (data)->
       message_list.append("<p><strong>#{data.from}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{data.mess}</p>")
-      message_list[0].scrollTop = message_list[0].scrollHeight
+      message_list[0].scrollTop = message_list[0].scrollHeight 
 
+    # 保存离线消息
+    socket.on 'offline', (data)=>
+      @save_offline_info(data.sender, data.msg, data.receiver)
+
+    # 点击发送消息 
     jQuery('.private-send .send-message').click ->
       msg = jQuery('.private-input .message').val()
       to = jQuery('.private-input .to-name').val()
@@ -135,6 +151,11 @@ class DiscussionGroupList
         window.location.href = "/rooms/#{group_id}/edit_group"
       else
         alert("您不是创建者不能对讨论组信息进行修改")
+
+    # 查询用户所在讨论组
+    @$eml.on 'click', '.group-list .list-head .search-group', =>
+      user_name = jQuery('.input-into').val()
+      window.location.href = "/rooms/discussion_group?user_name=#{user_name}&flag=search"
         
 
 # 创建讨论组
@@ -252,59 +273,69 @@ class DiscussionGroupRoom
       @out_discussion_group(user_name, group_id, flag)
 
 
-# 讨论组列表
-class GroupList
+# 首页
+class Home
   constructor: (@$eml)->
     @bind_event()
 
-
   bind_event: ->
-    @$eml.on 'click', '.group-list .list-head .search-group', =>
-      user_name = jQuery('.input-into').val()
-      # if user_name == ''
-      #   alert('请输入用户名')
-      # else
-      window.location.href = "/rooms/discussion_group?user_name=#{user_name}&flag=search"
+    socket.on 'prompt', (data)->
+      prompt_info = jQuery(".login .prompt-info")
+      jQuery(".login .prompt-info p").remove()
+      prompt_info.append("<p>#{data.info}</p>")
+
+    # 点击 "登录 socket" 按钮
+    @$eml.on 'click', '.prompt .login .button-option .sign-in', ->
+      user_name = jQuery(this).closest('.sign-in').attr('data-user')
+      socket.emit('login', user_name)
+
+    # 点击 "登出 socket" 按钮
+    @$eml.on 'click', '.prompt .login .button-option .logout', ->
+      user_name = jQuery(this).closest('.logout').attr('data-user')
+      socket.emit('logout', user_name)
+
+
+
 
 
 
 # 群聊天室
-jQuery(document).on 'ready page:load', ->
+jQuery(document).on 'turbolinks:load', ->
   if jQuery('.room').length > 0
     new Room jQuery('.room')
 
 # 用户注册
-jQuery(document).on 'ready page:load', ->
+jQuery(document).on 'turbolinks:load', ->
   if jQuery('.register').length > 0
     new Register jQuery('.register')
 
 # 单聊
-jQuery(document).on 'ready page:load', ->
+jQuery(document).on 'turbolinks:load', ->
   if jQuery('.private-room').length > 0
     new PrivateRoom jQuery('.private-room')
 
 # 讨论组
-jQuery(document).on 'ready page:load', ->
+jQuery(document).on 'turbolinks:load', ->
   if jQuery('.add-group').length > 0
     new AdddDiscussionGroup jQuery('.add-group')
 
 # 讨论组列表
-jQuery(document).on "ready page:load", ->
+jQuery(document).on "turbolinks:load", ->
   if jQuery('.group').length > 0
     new DiscussionGroupList jQuery('.group')
 
 # 讨论组房间
-jQuery(document).on "ready page:load", ->
+jQuery(document).on "turbolinks:load", ->
   if jQuery('.discussion-room').length > 0
     new DiscussionGroupRoom jQuery('.discussion-room')
 
 # 修改讨论组信息
-jQuery(document).on 'ready page:load', ->
+jQuery(document).on 'turbolinks:load', ->
   if jQuery('.edit-group').length > 0
     new DiscussionGroupEdit jQuery('.edit-group')
 
-# 讨论组列表
-jQuery(document).on 'ready page:load', ->
-  if jQuery('.group').length > 0
-    new GroupList jQuery('.group')
+# 首页
+jQuery(document).on 'turbolinks:load', ->
+  if jQuery('.home').length > 0
+    new Home jQuery('.home')
 

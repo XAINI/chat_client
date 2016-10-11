@@ -165,4 +165,23 @@ class RoomsController < ApplicationController
     end
   end
 
+  def save_offline_info
+    sender = params[:sender]
+    msg = params[:msg]
+    receiver = params[:receiver]
+    @offline_info = Message.create(sender: sender, msg: msg, receiver: receiver)
+
+    if @offline_info.save
+      render json: "对方不在线 信息已保存"
+    else
+      render json: "对方不在线 信息保存失败"
+    end
+
+    # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    # p sender
+    # p msg
+    # p receiver
+    # p "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+  end
+
 end

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     get :chat_room, on: :collection
     # 私聊
     get :private_room, on: :collection
+    post :save_offline_info, on: :collection
     # 注册
     get :register, on: :collection
     post :create_participant, on: :collection
