@@ -4,12 +4,17 @@ Rails.application.routes.draw do
     # 群聊
     get :staff, on: :collection
     get :chat_room, on: :collection
+
     # 私聊
     get :private_room, on: :collection
     post :save_offline_info, on: :collection
+    get :fetch_offline_info, on: :collection
+    delete :remove_offline_info, on: :collection
+
     # 注册
     get :register, on: :collection
     post :create_participant, on: :collection
+
     # 讨论组
     get :discussion_group, on: :collection
     get :add_group, on: :collection

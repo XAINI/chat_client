@@ -153,6 +153,7 @@ class RoomsController < ApplicationController
   end
 
 # 单聊
+  # 显示用户在 select 中
   def private_room
     id = params[:group_id]
     if id != nil
@@ -165,6 +166,7 @@ class RoomsController < ApplicationController
     end
   end
 
+  # 保存离线消息
   def save_offline_info
     sender = params[:sender]
     msg = params[:msg]
@@ -176,12 +178,29 @@ class RoomsController < ApplicationController
     else
       render json: "对方不在线 信息保存失败"
     end
+  end
 
-    # p ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    # p sender
-    # p msg
-    # p receiver
-    # p "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+  # 提取离线消息
+  def fetch_offline_info
+    user = params[:user]
+    @offline_info = Message.where(receiver: user).to_a
+    if @offline_info.length == 0
+      render json: "没有离线消息"
+    else
+      render json: @offline_info
+    end
+  end
+
+  # 移除离线消息
+  def remove_offline_info
+    user = params[:user]
+    @offline_info = Message.where(receiver: user)
+    @offline_info.each do |info|
+      info.destroy
+    end
+    if @offline_info.to_a.length == 0
+      render json: "移除成功"
+    end
   end
 
 end

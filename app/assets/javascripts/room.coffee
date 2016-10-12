@@ -88,6 +88,7 @@ class PrivateRoom
   constructor: (@$eml)->
     @bind_event()
 
+  # 保存离线消息
   save_offline_info:(sender, message, receiver)->
     jQuery.ajax
       url: "/rooms/save_offline_info",
@@ -98,10 +99,42 @@ class PrivateRoom
     .error (msg)->
       console.log msg
 
+  # 提取并显示离线消息
+  display_offline_info: (data, message_list)->
+    jQuery.ajax
+      url: '/rooms/fetch_offline_info',
+      method: 'get',
+      data:{user: data}
+    .success (msg)=>
+      for i in msg
+        message_list.append("<p><strong>#{i.sender}:&nbsp;&nbsp;&nbsp;&nbsp;</strong>#{i.msg}</p>")
+        message_list[0].scrollTop = message_list[0].scrollHeight 
+
+      @remove_displayed_offline_info(data)
+    .error (msg)->
+      console.log msg
+
+  # 移除离线消息
+  remove_displayed_offline_info: (data)->
+    jQuery.ajax
+      url: "/rooms/remove_offline_info",
+      method: "delete",
+      data: {user: data} 
+    .success (msg)->
+      console.log msg
+    .error (msg)->
+      console.log msg
+
+
+
   bind_event: ->
     from = jQuery('.private-input .from-name').val()
     message_list = jQuery('.private-content')
     socket.emit('new user', from)
+
+    # 显示离线消息
+    @display_offline_info(from, message_list)
+
 
     # 显示消息
     socket.on 'private', (data)->
