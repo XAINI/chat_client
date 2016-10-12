@@ -305,6 +305,10 @@ class DiscussionGroupRoom
       flag = "out"
       @out_discussion_group(user_name, group_id, flag)
 
+    @$eml.on 'click', ".back .back-group-list", ->
+      socket.emit('disconnect')
+
+
 
 # 首页
 class Home
