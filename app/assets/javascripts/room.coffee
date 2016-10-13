@@ -291,7 +291,7 @@ class DiscussionGroupRoom
       url: '/rooms/fetch_group_offline_info',
       method: 'get',
       data: {user: user}
-    .success (msg)->
+    .success (msg)=>
       for i in msg
         jQuery('.discussion-content').append("<p>#{i.sender}: #{i.msg}</p>")
         jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
@@ -302,7 +302,7 @@ class DiscussionGroupRoom
   # 移除已经显示了的离线消息
   remove_group_displayed_offline_info: (user)->
     jQuery.ajax
-      url: "/rooms/fetch_group_offline_info",
+      url: "/rooms/remove_group_offline_info",
       method: "delete",
       data: {user: user}
     .success (msg)->

@@ -163,7 +163,14 @@ class RoomsController < ApplicationController
 
   # 移除已经显示了的消息
   def remove_group_offline_info
-    
+    @group_offline = Message.where(receiver: params[:user])
+    @group_offline.each do |ginfo|
+      ginfo.destroy
+    end
+
+    if @group_offline.to_a.length == 0
+      render json: "移除成功"
+    end
   end
 
 # 群聊
