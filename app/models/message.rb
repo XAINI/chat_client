@@ -5,6 +5,7 @@ class Message
   field :sender, type: String
   field :msg, type: String
   field :receiver, type: String
+  field :group_id, type: String
 
   validates :sender, :msg, :receiver, presence: true
 

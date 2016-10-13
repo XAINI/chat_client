@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     post :update_group_member, on: :collection
     get :edit_group, on: :member
     get :show_detail, on: :member
+    post :save_group_offline_info, on: :collection
+    get :fetch_group_offline_info, on: :collection
+    delete :remove_group_offline_info, on: :collection
   end
 
   mount PlayAuth::Engine => '/auth', :as => :auth

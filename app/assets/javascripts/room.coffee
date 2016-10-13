@@ -262,7 +262,7 @@ class DiscussionGroupRoom
   constructor: (@$eml)->
     @bind_event()
 
-
+  # 退出讨论组
   out_discussion_group: (data, id, flag)->
     jQuery.ajax
       url: "/rooms/update_group_member",
@@ -274,12 +274,52 @@ class DiscussionGroupRoom
     .error (msg)->
       console.log msg
 
+  # 保存离线消息
+  save_group_offline_info: (group_id, sender, msg, receiver)->
+    jQuery.ajax
+      url: "/rooms/save_group_offline_info",
+      method: "post",
+      data: {group_id: group_id, sender: sender, msg: msg, receiver:receiver}
+    .success (msg)->
+      console.log msg
+    .error (msg)->
+      console.log msg
+
+  # 显示离线消息
+  display_group_offline_info: (user)->
+    jQuery.ajax
+      url: '/rooms/fetch_group_offline_info',
+      method: 'get',
+      data: {user: user}
+    .success (msg)->
+      for i in msg
+        jQuery('.discussion-content').append("<p>#{i.sender}: #{i.msg}</p>")
+        jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
+      @remove_group_displayed_offline_info(user)
+    .error (msg)->
+      console.log msg
+
+  # 移除已经显示了的离线消息
+  remove_group_displayed_offline_info: (user)->
+    jQuery.ajax
+      url: "/rooms/fetch_group_offline_info",
+      method: "delete",
+      data: {user: user}
+    .success (msg)->
+      console.log msg
+    .error (msg)->
+      console.log msg
+
 
   bind_event: ->
     user_name = jQuery('.send-discussion-msg .group-name').text()
+    user_name = user_name.replace(/[\n\s]/g, '')
     # 加入房间
     socket.on 'connect', ->
       socket.emit('join', user_name)
+
+    # 显示离线消息
+    @display_group_offline_info(user_name)
 
     # 监听消息
     socket.on 'msg', (user_name, msg)->
@@ -293,11 +333,24 @@ class DiscussionGroupRoom
       jQuery('.discussion-content').append(message)
       jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
 
+    # 离线消息保存
+    socket.on 'group offline', (data)=>
+      re = /(discussion|group|room|id|_|\?|=)/g
+      group_id = data.roomID
+      group_id = group_id.replace(re, '')
+      @save_group_offline_info(group_id, data.sender, data.msg, data.receiver)
+
+
     # 发送消息
     jQuery('.send-discussion-msg .send').click ->
+      group_member = jQuery(".discussion-group-name .group-name-msg .group-member").text()
       msg = jQuery('.send-discussion-msg .input-msg').val()
       jQuery('.send-discussion-msg .input-msg').val('')
-      socket.send(msg)
+      group_member = JSON.parse(group_member)
+      if msg
+        socket.send(msg, group_member)
+      else
+        alert("发送的信息不能为空")
 
     # 退出房间
     jQuery('.discussion-group-name .out-group').click =>
@@ -305,6 +358,7 @@ class DiscussionGroupRoom
       flag = "out"
       @out_discussion_group(user_name, group_id, flag)
 
+    # 点击回到 “讨论组列表”
     @$eml.on 'click', ".back .back-group-list", ->
       socket.emit('disconnect')
 

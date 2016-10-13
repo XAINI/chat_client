@@ -48,7 +48,6 @@ class RoomsController < ApplicationController
         @group.push(d)
       end
     end
-
   end
 
   # 创建讨论组(get)
@@ -125,7 +124,6 @@ class RoomsController < ApplicationController
         render render json: "更新失败"
       end
     end
-
   end
 
   # 讨论组聊天室
@@ -137,6 +135,35 @@ class RoomsController < ApplicationController
   # 讨论组详细信息
   def show_detail
     @group = Group.find(params[:id])
+  end
+
+  # 保存讨论组离线消息
+  def save_group_offline_info
+    group_id = params[:group_id]
+    sender = params[:sender]
+    msg = params[:msg]
+    receiver = params[:receiver]
+    @group_offline = Message.create(group_id: group_id, sender: sender, msg: msg, receiver: receiver)
+    if @group_offline.save
+      render json: "消息保存成功"
+    else
+      render json: "消息保存失败"
+    end
+  end
+
+  # 获取用户离线消息(讨论组)
+  def fetch_group_offline_info
+    @group_offline = Message.where(receiver: params[:user]).to_a
+    if @group_offline.length == 0
+      render json: "讨论组中没有离线消息"
+    else
+      render json: @group_offline
+    end
+  end
+
+  # 移除已经显示了的消息
+  def remove_group_offline_info
+    
   end
 
 # 群聊

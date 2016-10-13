@@ -16,6 +16,8 @@
             =g.name
           %span.group-id{style:"visibility:hidden"}
             =g.id
+          %span.group-member{style:"visibility:hidden"}
+            =g.member
     .out-group
       %button 退出房间
   .discussion-content
@@ -24,5 +26,5 @@
       %span.group-name
         =current_user.name
       %span :
-    %input.input-msg
+    %input.input-msg{placeholder:"说点儿什么..."}
     %button.send 发送
