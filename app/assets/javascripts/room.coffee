@@ -93,7 +93,7 @@ class PrivateRoom
     jQuery.ajax
       url: "/rooms/save_offline_info",
       method: "post",
-      data:{sender: sender, msg: message, receiver: receiver}
+      data:{sender: sender, msg: message, receiver: receiver, flag: "private"}
     .success (msg)->
       console.log msg.responseText
     .error (msg)->
@@ -279,7 +279,7 @@ class DiscussionGroupRoom
     jQuery.ajax
       url: "/rooms/save_group_offline_info",
       method: "post",
-      data: {group_id: group_id, sender: sender, msg: msg, receiver:receiver}
+      data: {group_id: group_id, sender: sender, msg: msg, receiver:receiver, flag: "group"}
     .success (msg)->
       console.log msg
     .error (msg)->

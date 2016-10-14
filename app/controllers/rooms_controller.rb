@@ -139,11 +139,7 @@ class RoomsController < ApplicationController
 
   # 保存讨论组离线消息
   def save_group_offline_info
-    group_id = params[:group_id]
-    sender = params[:sender]
-    msg = params[:msg]
-    receiver = params[:receiver]
-    @group_offline = Message.create(group_id: group_id, sender: sender, msg: msg, receiver: receiver)
+    @group_offline = Message.create(group_id: params[:group_id], sender: params[:sender], msg: params[:msg], receiver: params[:receiver], flag: params[:flag])
     if @group_offline.save
       render json: "消息保存成功"
     else
@@ -153,7 +149,7 @@ class RoomsController < ApplicationController
 
   # 获取用户离线消息(讨论组)
   def fetch_group_offline_info
-    @group_offline = Message.where(receiver: params[:user]).to_a
+    @group_offline = Message.where(receiver: params[:user], flag: "group").to_a
     if @group_offline.length == 0
       render json: "讨论组中没有离线消息"
     else
@@ -163,7 +159,7 @@ class RoomsController < ApplicationController
 
   # 移除已经显示了的消息
   def remove_group_offline_info
-    @group_offline = Message.where(receiver: params[:user])
+    @group_offline = Message.where(receiver: params[:user], flag: "group")
     @group_offline.each do |ginfo|
       ginfo.destroy
     end
@@ -202,10 +198,7 @@ class RoomsController < ApplicationController
 
   # 保存离线消息
   def save_offline_info
-    sender = params[:sender]
-    msg = params[:msg]
-    receiver = params[:receiver]
-    @offline_info = Message.create(sender: sender, msg: msg, receiver: receiver)
+    @offline_info = Message.create(sender: params[:sender], msg: params[:msg], receiver: params[:receiver], flag: params[:flag])
 
     if @offline_info.save
       render json: "对方不在线 信息已保存"
@@ -216,8 +209,7 @@ class RoomsController < ApplicationController
 
   # 提取离线消息
   def fetch_offline_info
-    user = params[:user]
-    @offline_info = Message.where(receiver: user).to_a
+    @offline_info = Message.where(receiver: params[:user], flag: "private").to_a
     if @offline_info.length == 0
       render json: "没有离线消息"
     else
@@ -227,8 +219,7 @@ class RoomsController < ApplicationController
 
   # 移除离线消息
   def remove_offline_info
-    user = params[:user]
-    @offline_info = Message.where(receiver: user)
+    @offline_info = Message.where(receiver: params[:user], flag: "private")
     @offline_info.each do |info|
       info.destroy
     end

@@ -6,7 +6,8 @@ class Message
   field :msg, type: String
   field :receiver, type: String
   field :group_id, type: String
+  field :flag, type: String
 
-  validates :sender, :msg, :receiver, presence: true
+  validates :sender, :msg, :receiver, :flag, presence: true
 
 end
