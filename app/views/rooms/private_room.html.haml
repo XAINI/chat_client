@@ -9,8 +9,8 @@
       %option{value: "0"} --请选择--
       -@user_name_ary.each do |u|
         -if u != current_user.name
-          -if @group != nil
-            -if @group.creator == u
+          -if @receiver != nil
+            -if @receiver == u
               %option{value: "#{u}", selected: "selected"} 
                 =u
             -else
@@ -23,4 +23,3 @@
   .private-send
     %button.send-message 发送
   .private-content
-    %ul

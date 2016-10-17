@@ -149,7 +149,7 @@ class RoomsController < ApplicationController
 
   # 获取用户离线消息(讨论组)
   def fetch_group_offline_info
-    @group_offline = Message.where(receiver: params[:user], flag: "group").to_a
+    @group_offline = Message.where(receiver: params[:user], group_id: params[:group_id], flag: "group").to_a
     if @group_offline.length == 0
       render json: "讨论组中没有离线消息"
     else
@@ -159,7 +159,7 @@ class RoomsController < ApplicationController
 
   # 移除已经显示了的消息
   def remove_group_offline_info
-    @group_offline = Message.where(receiver: params[:user], flag: "group")
+    @group_offline = Message.where(receiver: params[:user], group_id: params[:group_id], flag: "group")
     @group_offline.each do |ginfo|
       ginfo.destroy
     end
@@ -185,10 +185,7 @@ class RoomsController < ApplicationController
 # 单聊
   # 显示用户在 select 中
   def private_room
-    id = params[:group_id]
-    if id != nil
-      @group = Group.find(id)
-    end
+    @receiver = params[:receiver]
     @user_name_ary = []
     @all_user = User.all.to_a
     @all_user.each do |u|

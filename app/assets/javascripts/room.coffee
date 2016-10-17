@@ -135,6 +135,15 @@ class PrivateRoom
     # 显示离线消息
     @display_offline_info(from, message_list)
 
+    # 消息显示(平台内 讨论组 消息提示)
+    socket.on 'platform info', (data)->
+      message_list.append("<p>您有来自#{data.category}&nbsp;#{data.groupName}&nbsp;的消息</p>")
+      message_list[0].scrollTop = message_list[0].scrollHeight 
+
+    # 消息显示(平台内的 私聊 消息提示)
+    socket.on 'platform private info', (data)->
+      message_list.append("<p>您有来自&nbsp;#{data.sender}&nbsp;的#{data.category}消息</p>")
+      message_list[0].scrollTop = message_list[0].scrollHeight 
 
     # 显示消息
     socket.on 'private', (data)->
@@ -256,7 +265,6 @@ class DiscussionGroupEdit
         console.log "取消"
 
 
-
 # 讨论组房间
 class DiscussionGroupRoom
   constructor: (@$eml)->
@@ -286,25 +294,25 @@ class DiscussionGroupRoom
       console.log msg
 
   # 显示离线消息
-  display_group_offline_info: (user)->
+  display_group_offline_info: (user, group_id)->
     jQuery.ajax
       url: '/rooms/fetch_group_offline_info',
       method: 'get',
-      data: {user: user}
+      data: {user: user, group_id: group_id}
     .success (msg)=>
       for i in msg
         jQuery('.discussion-content').append("<p>#{i.sender}: #{i.msg}</p>")
         jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
-      @remove_group_displayed_offline_info(user)
+      @remove_group_displayed_offline_info(user, group_id)
     .error (msg)->
       console.log msg
 
   # 移除已经显示了的离线消息
-  remove_group_displayed_offline_info: (user)->
+  remove_group_displayed_offline_info: (user, group_id)->
     jQuery.ajax
       url: "/rooms/remove_group_offline_info",
       method: "delete",
-      data: {user: user}
+      data: {user: user, group_id: group_id}
     .success (msg)->
       console.log msg
     .error (msg)->
@@ -312,14 +320,27 @@ class DiscussionGroupRoom
 
 
   bind_event: ->
-    user_name = jQuery('.send-discussion-msg .group-name').text()
+    user_name = jQuery('.send-discussion-msg .user-name').text()
     user_name = user_name.replace(/[\n\s]/g, '')
     # 加入房间
     socket.on 'connect', ->
       socket.emit('join', user_name)
 
     # 显示离线消息
-    @display_group_offline_info(user_name)
+    group_id = jQuery(".discussion-group-name .group-name-msg .group-id").text()
+    group_id = group_id.replace(/[\n\s]/g, '')
+    @display_group_offline_info(user_name, group_id)
+
+    # 消息显示(平台内的 私聊 消息提示)
+    socket.on 'platform private info', (data)->
+      jQuery('.discussion-content').append("<p>您有来自&nbsp;#{data.sender}&nbsp;的#{data.category}消息</p>")
+      jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
+
+    # 消息显示(平台内 讨论组 消息提示)
+    socket.on 'platform info', (data)->
+      jQuery('.discussion-content').append("<p>您有来自#{data.category}&nbsp;#{data.groupName}&nbsp;的消息</p>")
+      jQuery('.discussion-content')[0].scrollTop = jQuery('.discussion-content')[0].scrollHeight
+
 
     # 监听消息
     socket.on 'msg', (user_name, msg)->
@@ -344,11 +365,13 @@ class DiscussionGroupRoom
     # 发送消息
     jQuery('.send-discussion-msg .send').click ->
       group_member = jQuery(".discussion-group-name .group-name-msg .group-member").text()
+      group_name = jQuery(".discussion-group-name .group-name-msg .group-room-detail").text()
       msg = jQuery('.send-discussion-msg .input-msg').val()
-      jQuery('.send-discussion-msg .input-msg').val('')
       group_member = JSON.parse(group_member)
+      group_name = group_name.replace(/[\n\s]/g, '')
       if msg
-        socket.send(msg, group_member)
+        socket.send(msg, group_member, group_name)
+        jQuery('.send-discussion-msg .input-msg').val('')
       else
         alert("发送的信息不能为空")
 
@@ -356,12 +379,12 @@ class DiscussionGroupRoom
     jQuery('.discussion-group-name .out-group').click =>
       group_id = jQuery(".discussion-group-name .group-name-msg .group-id").text()
       flag = "out"
+      group_id = group_id.replace(/[\n\s]/g, '')
       @out_discussion_group(user_name, group_id, flag)
 
     # 点击回到 “讨论组列表”
     @$eml.on 'click', ".back .back-group-list", ->
-      socket.emit('disconnect')
-
+      window.location.reload()
 
 
 # 首页
@@ -370,6 +393,15 @@ class Home
     @bind_event()
 
   bind_event: ->
+    # 消息显示(平台内的 讨论组 消息提示)
+    socket.on 'platform info', (data)->
+      jQuery(".platform-info").append("<p>您有来自#{data.category}&nbsp;#{data.groupName}&nbsp;的消息</p>")
+
+    # 消息显示(平台内的 私聊 消息提示)
+    socket.on 'platform private info', (data)->
+      jQuery(".platform-info").append("<p>您有来自&nbsp;#{data.sender}&nbsp;的#{data.category}消息</p>")
+
+    # 登录状态提示
     socket.on 'prompt', (data)->
       prompt_info = jQuery(".login .prompt-info")
       jQuery(".login .prompt-info p").remove()
