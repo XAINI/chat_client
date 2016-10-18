@@ -1,0 +1,17 @@
+!!!
+%html{ lang: "zh" }
+  %head
+    %title ChatClient
+    %script{src: "https://cdn.socket.io/socket.io-1.4.5.js"}
+
+    :javascript
+      (function(){
+        socket = io.connect("#{ENV['CHAT_CLIENT_SERVER_IP']}");
+      })();
+
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    = yield
+
