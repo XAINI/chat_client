@@ -3,12 +3,11 @@ chat_client (rails event)
 ```{bash}
 基于 rails 的即时聊天客户端
 
-在工程中的 /app/views/layoutes/application.html.erb 文件中修改 ip
+项目内打开 .gitignore 里增加
+config/application.yml
 
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script>
-  var socket = io.connect('http://(你的服务器 ip 地址):8080/');
-</script>
+项目内 config 下创建文件 application.yml
+CHAT_SERVER_APP_HOST: (你服务器 host 端口为 8080，例如：http://127.0.0.1:8080/)
 
 ```
 
