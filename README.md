@@ -3,10 +3,10 @@ chat_client (rails event)
 ```{bash}
 基于 rails 的即时聊天客户端
 
-项目内打开 .gitignore 里增加
+项目内打开 .gitignore 里增加内容如下:
 config/application.yml
 
-项目内 config 下创建文件 application.yml
+项目内 config 下创建文件 application.yml 文件内容如下:
 CHAT_SERVER_APP_HOST: (你服务器 host 端口为 8080，例如：http://127.0.0.1:8080/)
 
 ```
