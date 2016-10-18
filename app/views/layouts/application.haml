@@ -6,7 +6,7 @@
 
     :javascript
       (function(){
-        socket = io.connect("#{ENV['CHAT_CLIENT_SERVER_IP']}");
+        socket = io.connect("#{ENV['CHAT_SERVER_APP_HOST']}");
       })();
 
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
